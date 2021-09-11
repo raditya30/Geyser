@@ -101,7 +101,7 @@ public class ScoreboardUpdater extends Thread {
                 }
             }
 
-            session.getConnector().getGeneralThreadPool().schedule(this, 50, TimeUnit.MILLISECONDS);
+            session.getConnector().getScheduledThread().schedule(this, 50, TimeUnit.MILLISECONDS);
         }
     }
 

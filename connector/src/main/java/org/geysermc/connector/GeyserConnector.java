@@ -35,6 +35,7 @@ import com.nukkitx.protocol.bedrock.BedrockServer;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.kqueue.KQueue;
 import io.netty.util.NettyRuntime;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.internal.SystemPropertyUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -116,7 +117,7 @@ public class GeyserConnector {
 
     private boolean shuttingDown = false;
 
-    private final ScheduledExecutorService generalThreadPool;
+    private final ScheduledExecutorService scheduledThread;
 
     private final BedrockServer bedrockServer;
     private final PlatformType platformType;
@@ -142,7 +143,7 @@ public class GeyserConnector {
         logger.info("");
         logger.info("******************************************");
 
-        this.generalThreadPool = Executors.newScheduledThreadPool(config.getGeneralThreadPool());
+        this.scheduledThread = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("Geyser Scheduled Thread"));
 
         logger.setDebug(config.isDebugMode());
 
@@ -427,7 +428,7 @@ public class GeyserConnector {
             }
         }
 
-        generalThreadPool.shutdown();
+        scheduledThread.shutdown();
         bedrockServer.close();
         if (timeSyncer != null) {
             timeSyncer.shutdown();

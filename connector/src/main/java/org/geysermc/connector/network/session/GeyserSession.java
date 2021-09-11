@@ -682,7 +682,7 @@ public class GeyserSession implements CommandSender {
                 disconnect(e.toString());
             } else {
                 // Wait one second before trying again
-                connector.getGeneralThreadPool().schedule(() -> attemptCodeAuthentication(msaAuthenticationService), 1, TimeUnit.SECONDS);
+                connector.getScheduledThread().schedule(() -> attemptCodeAuthentication(msaAuthenticationService), 1, TimeUnit.SECONDS);
             }
         }
     }

@@ -292,7 +292,7 @@ public class PlayerEntity extends LivingEntity {
                 linkPacket.setEntityLink(new EntityLinkData(geyserId, parrot.getGeyserId(), type, false, false));
                 // Delay, or else spawned-in players won't get the link
                 // TODO: Find a better solution. This problem also exists with item frames
-                session.getConnector().getGeneralThreadPool().schedule(() -> session.sendUpstreamPacket(linkPacket), 500, TimeUnit.MILLISECONDS);
+                session.scheduleInEventLoop(() -> session.sendUpstreamPacket(linkPacket), 500, TimeUnit.MILLISECONDS);
                 if (isLeft) {
                     leftParrot = parrot;
                 } else {

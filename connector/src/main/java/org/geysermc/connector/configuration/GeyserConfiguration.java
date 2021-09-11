@@ -70,8 +70,6 @@ public interface GeyserConfiguration {
 
     boolean isDebugMode();
 
-    int getGeneralThreadPool();
-
     boolean isAllowThirdPartyCapes();
 
     boolean isAllowThirdPartyEars();

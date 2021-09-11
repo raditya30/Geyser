@@ -95,7 +95,7 @@ public class ItemFrameEntity extends Entity {
         session.getItemFrameCache().put(bedrockPosition, this);
 
         // Delay is required, or else loading in frames on chunk load is sketchy at best
-        session.getConnector().getGeneralThreadPool().schedule(() -> {
+        session.scheduleInEventLoop(() -> {
             updateBlock(session);
             session.getConnector().getLogger().debug("Spawned item frame at location " + bedrockPosition + " with java id " + entityId);
         }, 500, TimeUnit.MILLISECONDS);
