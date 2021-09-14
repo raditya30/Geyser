@@ -30,7 +30,6 @@ import org.geysermc.connector.common.AuthType;
 import org.geysermc.connector.network.session.GeyserSession;
 import org.geysermc.connector.network.translators.PacketTranslator;
 import org.geysermc.connector.network.translators.Translator;
-import org.geysermc.connector.utils.LanguageUtils;
 import org.geysermc.connector.utils.LoginEncryptionUtils;
 
 @Translator(packet = SetLocalPlayerAsInitializedPacket.class)
@@ -43,7 +42,6 @@ public class BedrockSetLocalPlayerAsInitializedTranslator extends PacketTranslat
 
                 if (session.getRemoteAuthType() == AuthType.ONLINE) {
                     if (!session.isLoggedIn()) {
-                        LanguageUtils.loadGeyserLocale(session.getLocale());
                         LoginEncryptionUtils.buildAndShowLoginWindow(session);
                     }
                     // else we were able to log the user in
