@@ -223,6 +223,8 @@ public class GeyserSession implements CommandSender {
     private Vector2i lastChunkPosition = null;
     private int renderDistance;
 
+    private boolean sentSpawnPacket;
+
     private boolean loggedIn;
     private boolean loggingIn;
 
@@ -497,6 +499,10 @@ public class GeyserSession implements CommandSender {
             disconnect(disconnectReason.name());
             connector.removePlayer(this);
         });
+
+        this.remoteAddress = connector.getConfig().getRemote().getAddress();
+        this.remotePort = connector.getConfig().getRemote().getPort();
+        this.remoteAuthType = connector.getConfig().getRemote().getAuthType();
     }
 
     /**
@@ -504,9 +510,7 @@ public class GeyserSession implements CommandSender {
      */
     public void connect() {
         startGame();
-        this.remoteAddress = connector.getConfig().getRemote().getAddress();
-        this.remotePort = connector.getConfig().getRemote().getPort();
-        this.remoteAuthType = connector.getConfig().getRemote().getAuthType();
+        sentSpawnPacket = true;
 
         // Set the hardcoded shield ID to the ID we just defined in StartGamePacket
         upstream.getSession().getHardcodedBlockingId().set(this.itemMappings.getStoredItems().shield().getBedrockId());
@@ -1114,7 +1118,11 @@ public class GeyserSession implements CommandSender {
         StartGamePacket startGamePacket = new StartGamePacket();
         startGamePacket.setUniqueEntityId(playerEntity.getGeyserId());
         startGamePacket.setRuntimeEntityId(playerEntity.getGeyserId());
-        startGamePacket.setPlayerGameType(GameType.SURVIVAL);
+        startGamePacket.setPlayerGameType(switch (gameMode) {
+            case CREATIVE -> GameType.CREATIVE;
+            case ADVENTURE -> GameType.ADVENTURE;
+            default -> GameType.SURVIVAL;
+        });
         startGamePacket.setPlayerPosition(Vector3f.from(0, 69, 0));
         startGamePacket.setRotation(Vector2f.from(1, 1));
 

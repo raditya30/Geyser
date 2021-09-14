@@ -109,7 +109,7 @@ public class JavaPlayerListEntryTranslator extends PacketTranslator<ServerPlayer
             }
         }
 
-        if (!translate.getEntries().isEmpty() && (packet.getAction() == PlayerListEntryAction.REMOVE_PLAYER || session.getUpstream().isInitialized())) {
+        if (!translate.getEntries().isEmpty()) {
             session.sendUpstreamPacket(translate);
         }
     }

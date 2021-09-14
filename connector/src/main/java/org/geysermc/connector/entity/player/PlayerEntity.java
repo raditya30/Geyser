@@ -116,7 +116,7 @@ public class PlayerEntity extends LivingEntity {
         if (session.getEntityCache().getPlayerEntity(uuid) == null)
             return;
 
-        if (session.getUpstream().isInitialized() && session.getEntityCache().getEntityByGeyserId(geyserId) == null) {
+        if (session.getEntityCache().getEntityByGeyserId(geyserId) == null) {
             session.getEntityCache().spawnEntity(this);
         } else {
             spawnEntity(session);

@@ -102,7 +102,12 @@ public class UpstreamPacketHandler extends LoggingPacketHandler {
     public boolean handle(ResourcePackClientResponsePacket packet) {
         switch (packet.getStatus()) {
             case COMPLETED:
-                session.connect();
+                if (connector.getConfig().getRemote().getAuthType() != AuthType.ONLINE) {
+                    session.authenticate(session.getAuthData().getName());
+                } else if (!couldLoginUserByName(session.getAuthData().getName())) {
+                    // We must spawn the white world
+                    session.connect();
+                }
                 connector.getLogger().info(LanguageUtils.getLocaleStringLog("geyser.network.connect", session.getAuthData().getName()));
                 break;
 
@@ -173,28 +178,11 @@ public class UpstreamPacketHandler extends LoggingPacketHandler {
                 connector.getLogger().info(LanguageUtils.getLocaleStringLog("geyser.auth.stored_credentials", session.getAuthData().getName()));
                 session.setMicrosoftAccount(info.isMicrosoftAccount());
                 session.authenticate(info.getEmail(), info.getPassword());
-
-                // TODO send a message to bedrock user telling them they are connected (if nothing like a motd
-                //      somes from the Java server w/in a few seconds)
                 return true;
             }
         }
 
         return false;
-    }
-
-    @Override
-    public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
-        LanguageUtils.loadGeyserLocale(session.getLocale());
-
-        if (!session.isLoggedIn() && !session.isLoggingIn() && session.getRemoteAuthType() == AuthType.ONLINE) {
-            // TODO it is safer to key authentication on something that won't change (UUID, not username)
-            if (!couldLoginUserByName(session.getAuthData().getName())) {
-                LoginEncryptionUtils.buildAndShowLoginWindow(session);
-            }
-            // else we were able to log the user in
-        }
-        return translateAndDefault(packet);
     }
 
     @Override
