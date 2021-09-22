@@ -140,17 +140,17 @@ public class GeyserSession implements CommandSender {
 
     private final SessionPlayerEntity playerEntity;
 
-    private AdvancementsCache advancementsCache;
-    private BookEditCache bookEditCache;
-    private ChunkCache chunkCache;
-    private EntityCache entityCache;
-    private EntityEffectCache effectCache;
+    private final AdvancementsCache advancementsCache;
+    private final BookEditCache bookEditCache;
+    private final ChunkCache chunkCache;
+    private final EntityCache entityCache;
+    private final EntityEffectCache effectCache;
     private final FormCache formCache;
     private final LodestoneCache lodestoneCache;
     private final PistonCache pistonCache;
     private final PreferencesCache preferencesCache;
     private final TagCache tagCache;
-    private WorldCache worldCache;
+    private final WorldCache worldCache;
 
     private final Int2ObjectMap<TeleportCache> teleportMap = new Int2ObjectOpenHashMap<>();
 
@@ -888,15 +888,8 @@ public class GeyserSession implements CommandSender {
         }
 
         if (tickThread != null) {
-            tickThread.cancel(true);
+            tickThread.cancel(false);
         }
-
-        this.advancementsCache = null;
-        this.bookEditCache = null;
-        this.chunkCache = null;
-        this.entityCache = null;
-        this.effectCache = null;
-        this.worldCache = null;
 
         closed = true;
     }
@@ -940,7 +933,7 @@ public class GeyserSession implements CommandSender {
             // Check to see if the player's position needs updating - a position update should be sent once every 3 seconds
             if (spawned && (System.currentTimeMillis() - lastMovementTimestamp) > 3000) {
                 // Recalculate in case something else changed position
-                Vector3d position = collisionManager.adjustBedrockPosition(playerEntity.getPosition(), playerEntity.isOnGround());
+                Vector3d position = collisionManager.adjustBedrockPosition(playerEntity.getPosition(), playerEntity.isOnGround(), false);
                 // A null return value cancels the packet
                 if (position != null) {
                     ClientPlayerPositionPacket packet = new ClientPlayerPositionPacket(playerEntity.isOnGround(),
